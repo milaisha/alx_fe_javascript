@@ -58,4 +58,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Show a new random quote when the button is clicked
     document.getElementById('newQuote').addEventListener('click', displayRandomQuote);
+
+    function showRandomQuote() {
+        const randomIndex = Math.floor(Math.random() * quotes.length);
+        const randomQuote = quotes[randomIndex];
+        const quoteDisplay = document.getElementById("quoteDisplay");
+        quoteDisplay.textContent = `"${randomQuote.text}" - ${randomQuote.category}`;
+    }
+    
 });
+
