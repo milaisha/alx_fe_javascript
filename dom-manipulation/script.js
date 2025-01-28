@@ -66,5 +66,35 @@ document.addEventListener('DOMContentLoaded', () => {
         quoteDisplay.textContent = `"${randomQuote.text}" - ${randomQuote.category}`;
     }
     
+    function createAddQuoteForm() {
+        // Create form container
+        const formContainer = document.createElement("div");
+        formContainer.id = "quoteForm";
+    
+        // Create input for quote text
+        const quoteInput = document.createElement("input");
+        quoteInput.type = "text";
+        quoteInput.id = "newQuoteText";
+        quoteInput.placeholder = "Enter a new quote";
+    
+        // Create input for quote category
+        const categoryInput = document.createElement("input");
+        categoryInput.type = "text";
+        categoryInput.id = "newQuoteCategory";
+        categoryInput.placeholder = "Enter quote category";
+    
+        // Create button for adding the quote
+        const addButton = document.createElement("button");
+        addButton.textContent = "Add Quote";
+        addButton.addEventListener("click", addQuote);
+    
+        // Append inputs and button to the form container
+        formContainer.appendChild(quoteInput);
+        formContainer.appendChild(categoryInput);
+        formContainer.appendChild(addButton);
+    
+        // Append form container to the body or main container
+        document.body.appendChild(formContainer);
+    } 
 });
 
