@@ -8,6 +8,8 @@ let quotes = [
 // Step 2: Function to display a random quote
 function displayRandomQuote() {
     const quoteDisplay = document.getElementById('quoteDisplay');
+
+    // Check if there are no quotes
     if (quotes.length === 0) {
         quoteDisplay.textContent = "No quotes available. Add a new quote!";
         return;
@@ -29,6 +31,7 @@ function addQuote() {
     const newQuoteText = document.getElementById('newQuoteText').value.trim();
     const newQuoteCategory = document.getElementById('newQuoteCategory').value.trim();
 
+    // Validate input
     if (newQuoteText === "" || newQuoteCategory === "") {
         alert("Please enter both a quote and a category!");
         return;
