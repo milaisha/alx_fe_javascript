@@ -6,7 +6,7 @@ let quotes = [
 ];
 
 // Step 2: Function to display a random quote
-function showRandomQuote() {
+function displayRandomQuote() {
     const quoteDisplay = document.getElementById('quoteDisplay');
     if (quotes.length === 0) {
         quoteDisplay.textContent = "No quotes available. Add a new quote!";
@@ -43,13 +43,16 @@ function addQuote() {
 
     // Notify the user
     alert("Quote added successfully!");
+
+    // Update the DOM to reflect the new quote
+    displayRandomQuote();
 }
 
 // Step 4: Attach event listeners
 document.addEventListener('DOMContentLoaded', () => {
     // Show a random quote when the page loads
-    showRandomQuote();
+    displayRandomQuote();
 
     // Show a new random quote when the button is clicked
-    document.getElementById('newQuote').addEventListener('click', showRandomQuote);
+    document.getElementById('newQuote').addEventListener('click', displayRandomQuote);
 });
