@@ -78,16 +78,15 @@ function addQuote() {
 // Step 6: Function to populate categories in the dropdown
 function populateCategories() {
     const categoryFilter = document.getElementById('categoryFilter');
-    const existingCategories = new Set();
 
-    // Extract unique categories from quotes
-    quotes.forEach(quote => existingCategories.add(quote.category));
+    // Extract unique categories using map and filter
+    const categories = [...new Set(quotes.map(quote => quote.category))];
 
     // Clear existing options (except "All Categories")
     categoryFilter.innerHTML = '<option value="all">All Categories</option>';
 
     // Add new categories to the dropdown
-    existingCategories.forEach(category => {
+    categories.forEach(category => {
         const option = document.createElement('option');
         option.value = category;
         option.textContent = category;
@@ -165,4 +164,3 @@ document.addEventListener('DOMContentLoaded', () => {
     // Show a new random quote when the button is clicked
     document.getElementById('newQuote').addEventListener('click', displayRandomQuote);
 });
-
