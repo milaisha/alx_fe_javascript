@@ -50,7 +50,7 @@ function displayRandomQuote() {
 }
 
 // Step 5: Function to add a new quote
-function addQuote() {
+async function addQuote() {
     const newQuoteText = document.getElementById('newQuoteText').value.trim();
     const newQuoteCategory = document.getElementById('newQuoteCategory').value.trim();
 
@@ -60,8 +60,11 @@ function addQuote() {
         return;
     }
 
+    // Create a new quote object
+    const newQuote = { text: newQuoteText, category: newQuoteCategory };
+
     // Add the new quote to the array
-    quotes.push({ text: newQuoteText, category: newQuoteCategory });
+    quotes.push(newQuote);
 
     // Save quotes to local storage
     saveQuotes();
@@ -77,8 +80,8 @@ function addQuote() {
     populateCategories();
     filterQuotes();
 
-    // Sync the new quote with the server
-    fetchQuotesFromServer();
+    // Post the new quote to the server
+    await postQuoteToServer(newQuote);
 }
 
 // Step 6: Function to populate categories in the dropdown
@@ -192,7 +195,35 @@ async function fetchQuotesFromServer() {
     }
 }
 
-// Step 11: Attach event listeners
+// Step 11: Function to post a new quote to the server
+async function postQuoteToServer(quote) {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+            method: 'POST', // Use POST method
+            headers: {
+                'Content-Type': 'application/json', // Set content type to JSON
+            },
+            body: JSON.stringify({
+                title: quote.text, // Map quote text to the server's expected field
+                body: quote.category, // Map quote category to the server's expected field
+                userId: 1, // Simulate a user ID
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to post quote to server');
+        }
+
+        const data = await response.json();
+        console.log('Quote posted to server:', data);
+        alert('Quote posted to server successfully!');
+    } catch (error) {
+        console.error('Error posting quote to server:', error);
+        alert('Failed to post quote to server. Please try again later.');
+    }
+}
+
+// Step 12: Attach event listeners
 document.addEventListener('DOMContentLoaded', () => {
     // Load quotes and selected filter from local storage
     loadQuotes();
