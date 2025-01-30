@@ -16,8 +16,8 @@ function loadQuotes() {
     populateCategories();
     filterQuotes();
 
-    // Sync data with the server
-    syncWithServer();
+    // Fetch quotes from the server
+    fetchQuotesFromServer();
 }
 
 // Step 3: Save quotes and selected filter to local storage
@@ -78,7 +78,7 @@ function addQuote() {
     filterQuotes();
 
     // Sync the new quote with the server
-    syncWithServer();
+    fetchQuotesFromServer();
 }
 
 // Step 6: Function to populate categories in the dropdown
@@ -159,8 +159,8 @@ function importFromJsonFile(event) {
     fileReader.readAsText(file);
 }
 
-// Step 10: Simulate server interaction
-async function syncWithServer() {
+// Step 10: Function to fetch quotes from the server
+async function fetchQuotesFromServer() {
     try {
         // Fetch quotes from the server (simulated using JSONPlaceholder)
         const response = await fetch('https://jsonplaceholder.typicode.com/posts');
@@ -187,8 +187,8 @@ async function syncWithServer() {
         populateCategories();
         filterQuotes();
     } catch (error) {
-        console.error('Error syncing with server:', error);
-        alert('Failed to sync with server. Please try again later.');
+        console.error('Error fetching quotes from server:', error);
+        alert('Failed to fetch quotes from server. Please try again later.');
     }
 }
 
@@ -203,6 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Show a new random quote when the button is clicked
     document.getElementById('newQuote').addEventListener('click', displayRandomQuote);
 
-    // Sync data with the server every 30 seconds
-    setInterval(syncWithServer, 30000);
+    // Fetch quotes from the server every 30 seconds
+    setInterval(fetchQuotesFromServer, 30000);
 });
