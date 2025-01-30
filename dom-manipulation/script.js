@@ -15,6 +15,9 @@ function loadQuotes() {
     // Populate categories and filter quotes
     populateCategories();
     filterQuotes();
+
+    // Sync data with the server
+    syncWithServer();
 }
 
 // Step 3: Save quotes and selected filter to local storage
@@ -73,6 +76,9 @@ function addQuote() {
     // Update the DOM to reflect the new quote and categories
     populateCategories();
     filterQuotes();
+
+    // Sync the new quote with the server
+    syncWithServer();
 }
 
 // Step 6: Function to populate categories in the dropdown
@@ -153,7 +159,40 @@ function importFromJsonFile(event) {
     fileReader.readAsText(file);
 }
 
-// Step 10: Attach event listeners
+// Step 10: Simulate server interaction
+async function syncWithServer() {
+    try {
+        // Fetch quotes from the server (simulated using JSONPlaceholder)
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+        const serverQuotes = await response.json();
+
+        // Convert server data to our quote format
+        const serverQuotesFormatted = serverQuotes.map(post => ({
+            text: post.title,
+            category: 'Server'
+        }));
+
+        // Merge server quotes with local quotes (server data takes precedence)
+        const mergedQuotes = [...quotes, ...serverQuotesFormatted];
+        const uniqueQuotes = [...new Map(mergedQuotes.map(quote => [quote.text, quote])).values()];
+
+        // Update local quotes and save to local storage
+        quotes = uniqueQuotes;
+        saveQuotes();
+
+        // Notify the user
+        alert('Data synced with server successfully!');
+
+        // Update the DOM
+        populateCategories();
+        filterQuotes();
+    } catch (error) {
+        console.error('Error syncing with server:', error);
+        alert('Failed to sync with server. Please try again later.');
+    }
+}
+
+// Step 11: Attach event listeners
 document.addEventListener('DOMContentLoaded', () => {
     // Load quotes and selected filter from local storage
     loadQuotes();
@@ -163,4 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Show a new random quote when the button is clicked
     document.getElementById('newQuote').addEventListener('click', displayRandomQuote);
+
+    // Sync data with the server every 30 seconds
+    setInterval(syncWithServer, 30000);
 });
