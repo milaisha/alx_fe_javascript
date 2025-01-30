@@ -56,7 +56,7 @@ async function addQuote() {
 
     // Validate input
     if (newQuoteText === "" || newQuoteCategory === "") {
-        alert("Please enter both a quote and a category!");
+        showNotification("Please enter both a quote and a category!", "error");
         return;
     }
 
@@ -74,7 +74,7 @@ async function addQuote() {
     document.getElementById('newQuoteCategory').value = "";
 
     // Notify the user
-    alert("Quote added successfully!");
+    showNotification("Quote added successfully!", "success");
 
     // Update the DOM to reflect the new quote and categories
     populateCategories();
@@ -155,7 +155,7 @@ function importFromJsonFile(event) {
         const importedQuotes = JSON.parse(e.target.result);
         quotes.push(...importedQuotes); // Add imported quotes to the array
         saveQuotes(); // Save updated quotes to local storage
-        alert('Quotes imported successfully!');
+        showNotification('Quotes imported successfully!', 'success');
         populateCategories(); // Update the categories dropdown
         filterQuotes(); // Update the DOM
     };
@@ -177,14 +177,14 @@ async function syncQuotes() {
         saveQuotes();
 
         // Step 4: Notify the user
-        alert('Quotes synced with server successfully!');
+        showNotification('Quotes synced with server!', 'success');
 
         // Step 5: Update the DOM
         populateCategories();
         filterQuotes();
     } catch (error) {
         console.error('Error syncing quotes:', error);
-        alert('Failed to sync quotes with server. Please try again later.');
+        showNotification('Failed to sync quotes with server. Please try again later.', 'error');
     }
 }
 
@@ -227,14 +227,27 @@ async function postQuoteToServer(quote) {
 
         const data = await response.json();
         console.log('Quote posted to server:', data);
-        alert('Quote posted to server successfully!');
+        showNotification('Quote posted to server successfully!', 'success');
     } catch (error) {
         console.error('Error posting quote to server:', error);
-        alert('Failed to post quote to server. Please try again later.');
+        showNotification('Failed to post quote to server. Please try again later.', 'error');
     }
 }
 
-// Step 13: Attach event listeners
+// Step 13: Function to show notifications
+function showNotification(message, type) {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.className = type; // Add class for styling (success or error)
+    notification.style.display = 'block'; // Show the notification
+
+    // Hide the notification after 3 seconds
+    setTimeout(() => {
+        notification.style.display = 'none';
+    }, 3000);
+}
+
+// Step 14: Attach event listeners
 document.addEventListener('DOMContentLoaded', () => {
     // Load quotes and selected filter from local storage
     loadQuotes();
