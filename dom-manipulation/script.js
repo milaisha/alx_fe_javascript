@@ -16,8 +16,8 @@ function loadQuotes() {
     populateCategories();
     filterQuotes();
 
-    // Fetch quotes from the server
-    fetchQuotesFromServer();
+    // Sync quotes with the server
+    syncQuotes();
 }
 
 // Step 3: Save quotes and selected filter to local storage
@@ -80,8 +80,8 @@ async function addQuote() {
     populateCategories();
     filterQuotes();
 
-    // Post the new quote to the server
-    await postQuoteToServer(newQuote);
+    // Sync quotes with the server
+    syncQuotes();
 }
 
 // Step 6: Function to populate categories in the dropdown
@@ -162,7 +162,33 @@ function importFromJsonFile(event) {
     fileReader.readAsText(file);
 }
 
-// Step 10: Function to fetch quotes from the server
+// Step 10: Function to sync quotes with the server
+async function syncQuotes() {
+    try {
+        // Step 1: Fetch quotes from the server
+        const serverQuotes = await fetchQuotesFromServer();
+
+        // Step 2: Merge server quotes with local quotes
+        const mergedQuotes = [...quotes, ...serverQuotes];
+        const uniqueQuotes = [...new Map(mergedQuotes.map(quote => [quote.text, quote])).values()];
+
+        // Step 3: Update local quotes and save to local storage
+        quotes = uniqueQuotes;
+        saveQuotes();
+
+        // Step 4: Notify the user
+        alert('Quotes synced with server successfully!');
+
+        // Step 5: Update the DOM
+        populateCategories();
+        filterQuotes();
+    } catch (error) {
+        console.error('Error syncing quotes:', error);
+        alert('Failed to sync quotes with server. Please try again later.');
+    }
+}
+
+// Step 11: Function to fetch quotes from the server
 async function fetchQuotesFromServer() {
     try {
         // Fetch quotes from the server (simulated using JSONPlaceholder)
@@ -170,32 +196,17 @@ async function fetchQuotesFromServer() {
         const serverQuotes = await response.json();
 
         // Convert server data to our quote format
-        const serverQuotesFormatted = serverQuotes.map(post => ({
+        return serverQuotes.map(post => ({
             text: post.title,
             category: 'Server'
         }));
-
-        // Merge server quotes with local quotes (server data takes precedence)
-        const mergedQuotes = [...quotes, ...serverQuotesFormatted];
-        const uniqueQuotes = [...new Map(mergedQuotes.map(quote => [quote.text, quote])).values()];
-
-        // Update local quotes and save to local storage
-        quotes = uniqueQuotes;
-        saveQuotes();
-
-        // Notify the user
-        alert('Data synced with server successfully!');
-
-        // Update the DOM
-        populateCategories();
-        filterQuotes();
     } catch (error) {
         console.error('Error fetching quotes from server:', error);
-        alert('Failed to fetch quotes from server. Please try again later.');
+        throw error;
     }
 }
 
-// Step 11: Function to post a new quote to the server
+// Step 12: Function to post a new quote to the server
 async function postQuoteToServer(quote) {
     try {
         const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
@@ -223,7 +234,7 @@ async function postQuoteToServer(quote) {
     }
 }
 
-// Step 12: Attach event listeners
+// Step 13: Attach event listeners
 document.addEventListener('DOMContentLoaded', () => {
     // Load quotes and selected filter from local storage
     loadQuotes();
@@ -234,6 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Show a new random quote when the button is clicked
     document.getElementById('newQuote').addEventListener('click', displayRandomQuote);
 
-    // Fetch quotes from the server every 30 seconds
-    setInterval(fetchQuotesFromServer, 30000);
+    // Sync quotes with the server every 30 seconds
+    setInterval(syncQuotes, 30000);
 });
